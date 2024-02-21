@@ -1,0 +1,29 @@
+{
+  "name": "github-search-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "mocha -r esm githubSearchApiTest.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kwongit/github-search-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kwongit/github-search-api/issues"
+  },
+  "homepage": "https://github.com/kwongit/github-search-api#readme",
+  "dependencies": {
+    "axios": "^1.6.7",
+    "chai": "^5.1.0",
+    "mocha": "^10.3.0"
+  },
+  "devDependencies": {
+    "esm": "^3.2.25"
+  }
+}

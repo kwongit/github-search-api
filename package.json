@@ -5,7 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "mocha -r esm githubSearchApiTest.js"
+    "test": "mocha -r esm test/api-tests/githubSearchApiTest.js",
+    "test:rate-limiting": "mocha -r esm test/api-tests/rateLimitingTest.js",
+    "test:ui": "mocha -r esm test/ui-tests/githubRepoNavigationTest.js"
   },
   "repository": {
     "type": "git",
@@ -22,7 +24,9 @@
     "axios": "^1.6.7",
     "axios-mock-adapter": "^1.22.0",
     "chai": "^5.1.0",
-    "mocha": "^10.3.0"
+    "chromedriver": "^122.0.2",
+    "mocha": "^10.3.0",
+    "selenium-webdriver": "^4.18.1"
   },
   "devDependencies": {
     "esm": "^3.2.25"

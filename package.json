@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "mocha -r esm test/api-tests/githubSearchApiTest.js",
+    "test:api": "mocha -r esm test/api-tests/githubSearchApiTest.js",
     "test:rate-limiting": "mocha -r esm test/api-tests/rateLimitingTest.js",
     "test:ui": "mocha -r esm test/ui-tests/githubRepoNavigationTest.js"
   },

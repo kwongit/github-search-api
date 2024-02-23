@@ -18,9 +18,10 @@ const MOCKED_304_ERR_TXT = "Not modified";
 const MOCKED_503_ERR_MSG = "Request failed with status code 503";
 const MOCKED_503_ERR_TXT = "Service unavailable";
 
+// Positive test cases
 describe("GitHub Search API Positive Test Cases", function () {
   // valid string
-  it("should handle search term", async function () {
+  it("should handle valid search term", async function () {
     const response = await axios.get(`${API_URL}?q=${SEARCH_TERM}`);
     const firstResult = response.data.items[0];
 
@@ -48,6 +49,7 @@ describe("GitHub Search API Positive Test Cases", function () {
   });
 });
 
+// Negative test cases
 describe("GitHub Search API Negative Test Cases", function () {
   // empty string
   it("should handle empty search term", async function () {
@@ -133,7 +135,7 @@ describe("GitHub Search API Negative Test Cases", function () {
     try {
       const response = await axios.get(`${API_URL}?q=${SEARCH_TERM}`);
       expect.fail(
-        "Expected request to fail due to mocked 304 response, but it succeed."
+        "Expected request to fail due to mocked 304 response, but it succeeded."
       );
     } catch (error) {
       expect(error.message).to.equal(MOCKED_304_ERR_MSG);

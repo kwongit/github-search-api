@@ -21,7 +21,7 @@ describe("GitHub Repo UI Navigation Tests", function () {
     await driver.quit();
   });
 
-  // Positive tests
+  // Positive test cases
   it("should navigate directly to the GitHub repository page", async function () {
     await driver.get(`${GITHUB_URL}/${REPO_NAME}`);
 
@@ -40,21 +40,18 @@ describe("GitHub Repo UI Navigation Tests", function () {
     expect(pageUrl).to.equal(`${GITHUB_URL}/${REPO_NAME}`);
   });
 
-  // Negative tests
-  it("should handle 404 error for non-existent repository", async function () {
+  // Negative test cases
+  it("should handle 404 error for non-existent repo", async function () {
     await driver.get(`${GITHUB_URL}/${NON_EXISTENT_REPO_NAME}`);
 
     // check page title
     const pageTitle = await driver.getTitle();
     expect(pageTitle).to.equal(NOT_FOUND_PAGE_TITLE);
 
-    // // check main container
-    // const error404Element = await driver.findElement({
-    //   alt: "404 “This is not the web page you are looking for”",
-    // });
-    // const error404Text = await error404Element.getText();
-    // expect(error404Text).to.include(
-    //   "The page you were looking for doesn't exist."
-    // );
+    // check main container
+    const pageMainContainerElement = await driver.findElement({
+      className: "font-mktg",
+    });
+    expect(await pageMainContainerElement.isDisplayed()).to.be.true;
   });
 });

@@ -18,23 +18,27 @@ const MOCKED_304_ERR_TXT = "Not modified";
 const MOCKED_503_ERR_MSG = "Request failed with status code 503";
 const MOCKED_503_ERR_TXT = "Service unavailable";
 
+async function searchRepositories(searchTerm) {
+  const response = await axios.get(`${API_URL}/?q=${searchTerm}`);
+  return response;
+}
+
 // Positive test cases
 describe("GitHub Search API Positive Test Cases", function () {
   // valid string
   it("should handle valid search term", async function () {
-    const response = await axios.get(`${API_URL}?q=${SEARCH_TERM}`);
-    const firstResult = response.data.items[0];
+    // const response = await axios.get(`${API_URL}?q=${SEARCH_TERM}`);
+    const response = searchRepositories(SEARCH_TERM);
 
     expect(response.status).to.equal(200);
     expect(response.statusText).to.equal("OK");
-
     expect(response.request.path).contains(SEARCH_TERM);
-
     expect(response.data.items).to.be.an("array");
     expect(response.data.items.length).to.be.greaterThanOrEqual(30); // Docs - Default: 30
 
-    expect(firstResult.description).to.be.a("string").and.not.empty;
+    const firstResult = response.data.items[0];
 
+    expect(firstResult.description).to.be.a("string").and.not.empty;
     expect(firstResult.license).to.be.an("object").and.not.empty;
     expect(firstResult.license).to.have.property("key").to.be.a("string").and
       .not.empty;
@@ -54,7 +58,8 @@ describe("GitHub Search API Negative Test Cases", function () {
   // empty string
   it("should handle empty search term", async function () {
     try {
-      const response = await axios.get(`${API_URL}?q=${EMPTY_SEARCH_TERM}`);
+      // const response = await axios.get(`${API_URL}?q=${EMPTY_SEARCH_TERM}`);
+      const response = searchRepositories(EMPTY_SEARCH_TERM);
       expect.fail(
         "Expected request to fail due to empty search term, but it succeeded."
       );
@@ -83,7 +88,8 @@ describe("GitHub Search API Negative Test Cases", function () {
 
   // undefined
   it("should handle undefined search term", async function () {
-    const response = await axios.get(`${API_URL}?q=${UNDEFINED_SEARCH_TERM}`);
+    // const response = await axios.get(`${API_URL}?q=${UNDEFINED_SEARCH_TERM}`);
+    const response = searchRepositories(UNDEFINED_SEARCH_TERM);
 
     expect(response.status).to.equal(200);
     expect(response.statusText).to.equal("OK");
@@ -94,7 +100,8 @@ describe("GitHub Search API Negative Test Cases", function () {
 
   // random string
   it("should handle non-match search term", async function () {
-    const response = await axios.get(`${API_URL}?q=${NON_MATCH_SEARCH_TERM}`);
+    // const response = await axios.get(`${API_URL}?q=${NON_MATCH_SEARCH_TERM}`);
+    const response = searchRepositories(NON_MATCH_SEARCH_TERM);
 
     expect(response.status).to.equal(200);
     expect(response.statusText).to.equal("OK");
@@ -111,9 +118,10 @@ describe("GitHub Search API Negative Test Cases", function () {
   // special characters
   it("should handle special character search term", async function () {
     try {
-      const response = await axios.get(
-        `${API_URL}?q=${SPECIAL_CHAR_SEARCH_TERM}`
-      );
+      // const response = await axios.get(
+      //   `${API_URL}?q=${SPECIAL_CHAR_SEARCH_TERM}`
+      // );
+      const response = searchRepositories(SPECIAL_CHAR_SEARCH_TERM);
       expect.fail(
         "Expected request to fail due to special characters search term, but it succeeded."
       );
@@ -133,7 +141,8 @@ describe("GitHub Search API Negative Test Cases", function () {
     mock.onGet(`${API_URL}?q=${SEARCH_TERM}`).reply(304, MOCKED_304_ERR_TXT);
 
     try {
-      const response = await axios.get(`${API_URL}?q=${SEARCH_TERM}`);
+      // const response = await axios.get(`${API_URL}?q=${SEARCH_TERM}`);
+      const response = searchRepositories(SEARCH_TERM);
       expect.fail(
         "Expected request to fail due to mocked 304 response, but it succeeded."
       );
@@ -150,7 +159,8 @@ describe("GitHub Search API Negative Test Cases", function () {
     mock.onGet(`${API_URL}?q=${SEARCH_TERM}`).reply(503, MOCKED_503_ERR_TXT);
 
     try {
-      const response = await axios.get(`${API_URL}?q=${SEARCH_TERM}`);
+      // const response = await axios.get(`${API_URL}?q=${SEARCH_TERM}`);
+      const response = searchRepositories(SEARCH_TERM);
       expect.fail(
         "Expected request to fail due to mocked 503 response, but it succeeded."
       );

@@ -19,7 +19,7 @@ const MOCKED_503_ERR_MSG = "Request failed with status code 503";
 const MOCKED_503_ERR_TXT = "Service unavailable";
 
 async function searchRepositories(searchTerm) {
-  const response = await axios.get(`${API_URL}/?q=${searchTerm}`);
+  const response = await axios.get(`${API_URL}?q=${searchTerm}`);
   return response;
 }
 
@@ -28,7 +28,7 @@ describe("GitHub Search API Positive Test Cases", function () {
   // valid string
   it("should handle valid search term", async function () {
     // const response = await axios.get(`${API_URL}?q=${SEARCH_TERM}`);
-    const response = searchRepositories(SEARCH_TERM);
+    const response = await searchRepositories(SEARCH_TERM);
 
     expect(response.status).to.equal(200);
     expect(response.statusText).to.equal("OK");
@@ -55,11 +55,28 @@ describe("GitHub Search API Positive Test Cases", function () {
 
 // Negative test cases
 describe("GitHub Search API Negative Test Cases", function () {
+  let mock;
+
+  beforeEach(function () {
+    if (
+      this.currentTest.title === "should handle 304 response" ||
+      this.currentTest.title === "should handle 503 response"
+    ) {
+      mock = new MockAdapter(axios);
+    }
+  });
+
+  afterEach(function () {
+    if (mock) {
+      mock.restore();
+    }
+  });
+
   // empty string
   it("should handle empty search term", async function () {
     try {
       // const response = await axios.get(`${API_URL}?q=${EMPTY_SEARCH_TERM}`);
-      const response = searchRepositories(EMPTY_SEARCH_TERM);
+      await searchRepositories(EMPTY_SEARCH_TERM);
       expect.fail(
         "Expected request to fail due to empty search term, but it succeeded."
       );
@@ -69,6 +86,9 @@ describe("GitHub Search API Negative Test Cases", function () {
       expect(error.response.statusText).to.equal(
         EMPTY_SEARCH_TERM_ERR_STATUS_TEXT
       );
+      expect(error.response.data).to.be.an("object");
+      expect(error.response.data).to.have.property("message");
+      expect(error.response.data).to.have.property("errors");
       expect(error.response.data.message).to.equal(
         EMPTY_SEARCH_TERM_ERR_RESP_MSG
       );
@@ -89,7 +109,7 @@ describe("GitHub Search API Negative Test Cases", function () {
   // undefined
   it("should handle undefined search term", async function () {
     // const response = await axios.get(`${API_URL}?q=${UNDEFINED_SEARCH_TERM}`);
-    const response = searchRepositories(UNDEFINED_SEARCH_TERM);
+    const response = await searchRepositories(UNDEFINED_SEARCH_TERM);
 
     expect(response.status).to.equal(200);
     expect(response.statusText).to.equal("OK");
@@ -101,7 +121,7 @@ describe("GitHub Search API Negative Test Cases", function () {
   // random string
   it("should handle non-match search term", async function () {
     // const response = await axios.get(`${API_URL}?q=${NON_MATCH_SEARCH_TERM}`);
-    const response = searchRepositories(NON_MATCH_SEARCH_TERM);
+    const response = await searchRepositories(NON_MATCH_SEARCH_TERM);
 
     expect(response.status).to.equal(200);
     expect(response.statusText).to.equal("OK");
@@ -121,7 +141,7 @@ describe("GitHub Search API Negative Test Cases", function () {
       // const response = await axios.get(
       //   `${API_URL}?q=${SPECIAL_CHAR_SEARCH_TERM}`
       // );
-      const response = searchRepositories(SPECIAL_CHAR_SEARCH_TERM);
+      await searchRepositories(SPECIAL_CHAR_SEARCH_TERM);
       expect.fail(
         "Expected request to fail due to special characters search term, but it succeeded."
       );
@@ -137,12 +157,12 @@ describe("GitHub Search API Negative Test Cases", function () {
 
   // 304 - Not modified
   it("should handle 304 response", async function () {
-    const mock = new MockAdapter(axios);
+    // const mock = new MockAdapter(axios);
     mock.onGet(`${API_URL}?q=${SEARCH_TERM}`).reply(304, MOCKED_304_ERR_TXT);
 
     try {
       // const response = await axios.get(`${API_URL}?q=${SEARCH_TERM}`);
-      const response = searchRepositories(SEARCH_TERM);
+      await searchRepositories(SEARCH_TERM);
       expect.fail(
         "Expected request to fail due to mocked 304 response, but it succeeded."
       );
@@ -155,12 +175,12 @@ describe("GitHub Search API Negative Test Cases", function () {
 
   // 503 - Service unavaible
   it("should handle 503 response", async function () {
-    const mock = new MockAdapter(axios);
+    // const mock = new MockAdapter(axios);
     mock.onGet(`${API_URL}?q=${SEARCH_TERM}`).reply(503, MOCKED_503_ERR_TXT);
 
     try {
       // const response = await axios.get(`${API_URL}?q=${SEARCH_TERM}`);
-      const response = searchRepositories(SEARCH_TERM);
+      await searchRepositories(SEARCH_TERM);
       expect.fail(
         "Expected request to fail due to mocked 503 response, but it succeeded."
       );

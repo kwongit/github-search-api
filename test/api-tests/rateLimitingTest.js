@@ -6,12 +6,13 @@ const SEARCH_TERM = "create-react-app";
 
 const RATE_LIMIT_ERR_MSG = "Request failed with status code 403";
 const RATE_LIMIT_ERR_STATUS_TEXT = "rate limit exceeded";
+const MAX_REQUESTS_PER_MINUTE = 11;
 
 describe("GitHub Search API Negative Test Cases", function () {
   // Docs - For unauthenticated requests, the rate limit allows you to make up to 10 requests per minute.
   it("should handle rate limit exceeded", async function () {
     try {
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < MAX_REQUESTS_PER_MINUTE; i++) {
         await axios.get(`${API_URL}?q=${SEARCH_TERM}`);
       }
       expect.fail(

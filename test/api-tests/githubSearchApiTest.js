@@ -21,11 +21,8 @@ const MOCKED_503_ERR_TXT = "Service unavailable";
 
 // Add a request interceptor
 axios.interceptors.request.use(function (config) {
-  // Add credentials to request header
-  config.auth = {
-    username: process.env.GITHUB_USERNAME,
-    password: process.env.GITHUB_TOKEN,
-  };
+  // Add authorization header with the access token
+  config.headers.Authorization = `token ${process.env.GITHUB_TOKEN}`;
   return config;
 });
 

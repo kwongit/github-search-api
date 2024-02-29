@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
+import "dotenv/config";
 
 const API_URL = "https://api.github.com/search/repositories";
 const SEARCH_TERM = "create-react-app";
@@ -17,6 +18,16 @@ const MOCKED_304_ERR_MSG = "Request failed with status code 304";
 const MOCKED_304_ERR_TXT = "Not modified";
 const MOCKED_503_ERR_MSG = "Request failed with status code 503";
 const MOCKED_503_ERR_TXT = "Service unavailable";
+
+// Add a request interceptor
+axios.interceptors.request.use(function (config) {
+  // Add credentials to request header
+  config.auth = {
+    username: process.env.GITHUB_USERNAME,
+    password: process.env.GITHUB_TOKEN,
+  };
+  return config;
+});
 
 async function searchRepositories(searchTerm) {
   const response = await axios.get(`${API_URL}?q=${searchTerm}`);
